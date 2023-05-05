@@ -1,4 +1,12 @@
-    <!DOCTYPE html>
+<?php
+
+//Dołącz plik system.php zawierający połączenia z bazą danych w zmiennej $connect;
+require ('app/system.php');
+
+?>
+
+
+<!DOCTYPE html>
     <html lang="pl">
 
     <head>
@@ -32,6 +40,57 @@
                 </div>
         </nav>
     </div>
+
+    <?php
+
+    //Verify that data has been entered
+    if(isset($_POST['product_name']) && isset($_POST['product_amount']) && isset($_POST['product_value'])){
+
+        //Check for empty fields; isset does not check this
+        if(!empty($_POST['product_name']) || !empty($_POST['product_amount']) || !empty($_POST['product_value'])){
+
+            //Filter the data
+           $product_name = mysqli_real_escape_string($connect, $_POST['product_name']);
+           $product_amount = mysqli_real_escape_string($connect, $_POST['product_amount']);
+           $product_value = mysqli_real_escape_string($connect, $_POST['product_value']);
+
+           /*
+            *
+            * Uses the decimal type in the database,
+            * So if someone enters a value with , {comma}
+            * , {comma} it converts it to . {dot}
+            *
+            */
+           $product_value = str_replace(',','.',$product_value);
+
+
+           //SQL Query adding product to the base
+           $insertSQL = "INSERT INTO storage (product_name, product_amount, product_value) VALUES ('$product_name','$product_amount','$product_value')";
+
+            // Execution of the SQL query
+           if($connect->query($insertSQL)){
+               //Move to index.php {List of products}
+               header('Location: index.php');
+           }
+
+        }else{
+            $msg = 'Nie dodano produktu do bazy danych';
+        }
+
+        $msg = 'Wypełnij wszystkie pola';
+
+    }
+
+    //Show error msg, if is needed.
+    if(!empty($msg)){
+        echo "<div class='alert alert-info mb-2' role='alert'>
+           $msg
+        </div>";
+
+    }
+
+
+    ?>
 
     <div class="container">
         <div class="row">

@@ -1,3 +1,11 @@
+<?php
+
+//Include a system.php file containing database connections in the $connect variable;
+require ('app/system.php');
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="pl">
 
@@ -48,20 +56,36 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td>Nazwa</td>
-                    <td>Ilość</td>
-                    <td>Wartość</td>
-                    <td>
-                        <a href='edit.php' class='me-2'>
-                            <button class='btn btn-success'>Edytuj</button>
-                        </a>
-                        <a href='delete.php'>
-                            <button class='btn btn-danger'>Usuń</button>
-                        </a>
-                    </td>
-                </tr>
+
+                <?php
+                //fetch records from the database
+                $getData = $connect->query('SELECT * FROM storage');
+
+                //display the records in a table using a foreach loop
+                foreach ($getData as $value){
+
+                   echo " <tr> ";
+                   echo "  <th scope='row'>$value[id]</th>";
+                   echo "  <td>$value[product_name]</td>";
+                   echo "  <td>$value[product_amount]</td>";
+                   echo "  <td>$value[product_value]</td>";
+                   echo "  <td>";
+                   echo "      <a href='edit.php?id=$value[id]' class='me-2'>";
+                   echo "          <button class='btn btn-success'>Edytuj</button>";
+                   echo "      </a>";
+                   echo "      <a href='delete.php?id=$value[id]'>";
+                   echo "          <button class='btn btn-danger'>Usuń</button>";
+                   echo "      </a>";
+                   echo "  </td>";
+                   echo "  </tr>";
+
+                }
+
+
+
+                ?>
+
+
 
 
                 </tbody>
